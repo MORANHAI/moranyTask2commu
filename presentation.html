@@ -35,6 +35,7 @@
             overflow-y: auto; /* Enable vertical scrolling for content that exceeds height */
             /* Custom scrollbar for slides */
             scrollbar-width: thin;
+            min-height: 0;
             scrollbar-color: #A0AEC0 #F7FAFC;
         }
         .slide::-webkit-scrollbar {
@@ -87,7 +88,11 @@
             color: #495057;
             margin-bottom: 2rem;
         }
-
+ #presentation-container {
+            flex-grow: 1;
+            height: auto;
+            min-height: 0;
+        }
         /* Code block styling */
         pre {
             background-color: #212529; /* Dark background */
