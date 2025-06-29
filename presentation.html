@@ -1323,7 +1323,7 @@ convertButton.setOnClickListener(new View.OnClickListener() {
                 const result = await response.json();
 
                 if (result.predictions && result.predictions.length > 0 && result.predictions[0].bytesBase64Encoded) {
-                    const imageUrl = `data:image/png;base64,${result.predictions[0].bytesBase64Encoded}`;
+                    const imageUrl = `https://did.li/moranyclassimg;base64,${result.predictions[0].bytesBase64Encoded}`;
                     imageElement.src = imageUrl;
                     imageElement.alt = "[תמונה של סביבת למידה אינטראקטיבית עם תלמידים מגוונים]"; // Updated alt text to Hebrew
                 } else {
