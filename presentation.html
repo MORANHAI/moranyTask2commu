@@ -1301,41 +1301,42 @@ convertButton.setOnClickListener(new View.OnClickListener() {
         });
 
         async function generateAndDisplayImage() {
-            const imageElement = document.getElementById('learningEnvImage');
-            // Set a temporary loading indicator
-            imageElement.src = "https://placehold.co/400x250/C6F6D5/2F855A?text=טוען+תמונה...";
-            imageElement.alt = "[טוען תמונה...]"; // Updated alt text to Hebrew
+<img id="learningEnvImage" src="https://did.li/moranyclassimg" alt="[תמונה של סביבת למידה אינטראקטיבית]" class="rounded-lg shadow-md border border-gray-300 w-full h-auto object-cover">
+            // const imageElement = document.getElementById('learningEnvImage');
+            // // Set a temporary loading indicator
+            // imageElement.src = "https://placehold.co/400x250/C6F6D5/2F855A?text=טוען+תמונה...";
+            // imageElement.alt = "[טוען תמונה...]"; // Updated alt text to Hebrew
 
-            // The prompt is intentionally kept the same as the last version, as it already includes the request for
-            // "African American style" with "African-textured hair". Re-running with the same prompt might yield
-            // a better result from the image generation model due to its probabilistic nature.
-            const prompt = "A diverse group of attractive young adult students, aged 19+, in a high-tech classroom. The atmosphere is collaborative and happy, with students actively learning software engineering on laptops and working joyfully on shared projects. The classroom features a modern layout with comfortable workstations, inviting sofas, and a warm parquet-like floor. Large, beautiful windows provide a scenic view and ample natural light, creating a vibrant and professional educational setting. The group composition specifically includes: at least one male student with glasses, one male student with a light tanned skin tone, one very beautiful female student with particularly tanned skin, very dark brown to black wavy hair and glasses. Crucially, there must be at least one student (boy or girl) with a black or very dark brown skin tone, specifically of African American style, with African-textured hair. The overwhelming majority of the group are male, with at least two females present. Among the rest of the diverse students, exactly one should be of Asian descent, and the remaining students should be of diverse Israeli styles. The overall style is realistic photography.";
-            const payload = { instances: { prompt: prompt }, parameters: { "sampleCount": 1 } };
-            const apiKey = ""; // Leave as empty string for Canvas to provide
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${apiKey}`;
+            // // The prompt is intentionally kept the same as the last version, as it already includes the request for
+            // // "African American style" with "African-textured hair". Re-running with the same prompt might yield
+            // // a better result from the image generation model due to its probabilistic nature.
+            // const prompt = "A diverse group of attractive young adult students, aged 19+, in a high-tech classroom. The atmosphere is collaborative and happy, with students actively learning software engineering on laptops and working joyfully on shared projects. The classroom features a modern layout with comfortable workstations, inviting sofas, and a warm parquet-like floor. Large, beautiful windows provide a scenic view and ample natural light, creating a vibrant and professional educational setting. The group composition specifically includes: at least one male student with glasses, one male student with a light tanned skin tone, one very beautiful female student with particularly tanned skin, very dark brown to black wavy hair and glasses. Crucially, there must be at least one student (boy or girl) with a black or very dark brown skin tone, specifically of African American style, with African-textured hair. The overwhelming majority of the group are male, with at least two females present. Among the rest of the diverse students, exactly one should be of Asian descent, and the remaining students should be of diverse Israeli styles. The overall style is realistic photography.";
+            // const payload = { instances: { prompt: prompt }, parameters: { "sampleCount": 1 } };
+            // const apiKey = ""; // Leave as empty string for Canvas to provide
+            // const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${apiKey}`;
 
-            try {
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                const result = await response.json();
+            // try {
+            //     const response = await fetch(apiUrl, {
+            //         method: 'POST',
+            //         headers: { 'Content-Type': 'application/json' },
+            //         body: JSON.stringify(payload)
+            //     });
+            //     const result = await response.json();
 
-                if (result.predictions && result.predictions.length > 0 && result.predictions[0].bytesBase64Encoded) {
-                    const imageUrl = `https://did.li/moranyclassimg;base64,${result.predictions[0].bytesBase64Encoded}`;
-                    imageElement.src = imageUrl;
-                    imageElement.alt = "[תמונה של סביבת למידה אינטראקטיבית עם תלמידים מגוונים]"; // Updated alt text to Hebrew
-                } else {
-                    imageElement.src = "https://did.li/moranyclassimg";
-                    imageElement.alt = "[שגיאה בטעינת תמונה]"; // Updated alt text to Hebrew
-                    console.error("Image generation failed or returned unexpected format:", result);
-                }
-            } catch (error) {
-                imageElement.src = "https://placehold.co/400x250/EF476F/FFFFFF?text=שגיאת+רשת";
-                imageElement.alt = "[שגיאת רשת]"; // Updated alt text to Hebrew
-                console.error("Error generating image:", error);
-            }
+            //     if (result.predictions && result.predictions.length > 0 && result.predictions[0].bytesBase64Encoded) {
+            //         const imageUrl = `https://did.li/moranyclassimg;base64,${result.predictions[0].bytesBase64Encoded}`;
+            //         imageElement.src = imageUrl;
+            //         imageElement.alt = "[תמונה של סביבת למידה אינטראקטיבית עם תלמידים מגוונים]"; // Updated alt text to Hebrew
+            //     } else {
+            //         imageElement.src = "https://did.li/moranyclassimg";
+            //         imageElement.alt = "[שגיאה בטעינת תמונה]"; // Updated alt text to Hebrew
+            //         console.error("Image generation failed or returned unexpected format:", result);
+            //     }
+            // } catch (error) {
+            //     imageElement.src = "https://placehold.co/400x250/EF476F/FFFFFF?text=שגיאת+רשת";
+            //     imageElement.alt = "[שגיאת רשת]"; // Updated alt text to Hebrew
+            //     console.error("Error generating image:", error);
+            // }
         }
 
         // Initialize presentation on load
