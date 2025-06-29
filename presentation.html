@@ -21,6 +21,8 @@
             padding: 20px;
             overflow: hidden; /* Prevent body scroll, presentation wrapper handles its own scroll/height */
         }
+              }
+        /* ... existing slide styles ... */
         .slide {
             display: none;
             width: 100%;
@@ -35,8 +37,15 @@
             overflow-y: auto; /* Enable vertical scrolling for content that exceeds height */
             /* Custom scrollbar for slides */
             scrollbar-width: thin;
-            min-height: 0;
             scrollbar-color: #A0AEC0 #F7FAFC;
+            min-height: 0; /* ADD THIS LINE */
+        }
+
+
+ #presentation-container {
+            flex-grow: 1;
+            height: auto;
+            min-height: 0;
         }
         .slide::-webkit-scrollbar {
             width: 8px;
@@ -88,11 +97,7 @@
             color: #495057;
             margin-bottom: 2rem;
         }
- #presentation-container {
-            flex-grow: 1;
-            height: auto;
-            min-height: 0;
-        }
+
         /* Code block styling */
         pre {
             background-color: #212529; /* Dark background */
