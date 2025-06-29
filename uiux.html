@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מצגת אינטראקטיבית: ממיר יחידות</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Assistant', sans-serif;
+            background-color: #F8F9FA;
+            direction: rtl; /* Set text direction to right-to-left for Hebrew */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            overflow: hidden; /* Prevent body scroll, presentation wrapper handles its own scroll/height */
+        }
+        .slide {
+            display: none;
+            width: 100%;
+            height: 100%;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 1.5rem; /* Default padding for all slides */
+            box-sizing: border-box; /* Include padding in element's total width and height */
+            flex-grow: 1; /* Allow slides to grow and fill available space */
+            overflow-y: auto; /* Enable vertical scrolling for content that exceeds height */
+            /* Custom scrollbar for slides */
+            scrollbar-width: thin;
+            scrollbar-color: #A0AEC0 #F7FAFC;
+        }
+        .slide::-webkit-scrollbar {
+            width: 8px;
+        }
+        .slide::-webkit-scrollbar-track {
+            background: #F7FAFC;
+            border-radius: 4px;
+        }
+        .slide::-webkit-scrollbar-thumb {
+            background-color: #A0AEC0;
+            border-radius: 4px;
+            border: 2px solid #F7FAFC;
+        }
+
+        .slide.active {
+            display: flex; /* Show active slide with flex for centering */
+        }
+
+        /* Main container for the presentation to centralize content */
+        .presentation-wrapper {
+            background-color: #FFFFFF;
+            border-radius: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            padding: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 1000px;
+            width: 100%;
+            text-align: center;
+            border: 2px solid #E5E7EB;
+            min-height: 70vh;
+            max-height: 90vh; /* Added max-height for enabling scroll on slides */
+            overflow-y: auto; /* Allow the wrapper itself to scroll if needed, though slides handle most overflow */
+            position: relative; /* For absolute positioning of בס"ד */
+        }
+
+        /* General title/subtitle styles */
+        .slide-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #26547C; /* Blue */
+            margin-bottom: 2.5rem;
+            line-height: 1.2;
+        }
+        .slide-subtitle {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 2rem;
+        }
+
+        /* Code block styling */
+        pre {
+            background-color: #212529; /* Dark background */
+            color: #F8F9FA; /* Light text */
+            padding: 1.5rem;
+            border-radius: 1rem;
+            text-align: left;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+            overflow-x: auto;
+            border: 1px solid #495057;
+            width: 100%;
+            max-width: 700px; /* Max width for code blocks */
+            box-sizing: border-box;
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        pre code { white-space: pre-wrap; } /* Allow wrapping in code blocks */
+
+        /* Specific styles for code highlighting (Energetic & Playful palette) */
+        .java-keyword { color: #FCBF49; } /* Orange for keywords */
+        .java-type { color: #FFD166; } /* Yellow for types */
+        .java-method { color: #06D6A0; } /* Green for methods */
+        .java-variable { color: #F8F9FA; } /* White for variables */
+        .java-string { color: #EF476F; } /* Red for strings */
+        .java-comment { color: #6C757D; } /* Gray for comments */
+        .java-catch { color: #26547C; } /* Blue for catch */
+        .xml-tag { color: #06D6A0; } /* Green for XML tags */
+        .xml-attr { color: #FCBF49; } /* Orange for XML attributes */
+        .xml-value { color: #FFD166; } /* Yellow for XML attribute values */
+        .xml-id-highlight { color: #EF476F; font-weight: bold; } /* Red for highlighted IDs */
+
+
+        /* --- Styles for Slide 1 (Title Visual) --- */
+        .connection-diagram {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-top: 2rem;
+            gap: 2.5rem;
+        }
+        @media (min-width: 768px) {
+            .connection-diagram {
+                flex-direction: row;
+                gap: 3.5rem;
+            }
+        }
+        .platform-bubble {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1.5rem;
+            border-radius: 1.5rem;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            background-color: #F8F9FA;
+            border: 2px solid;
+            width: 180px;
+            height: 180px;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .java-bubble { border-color: #EF476F; /* Red */ }
+        .android-bubble { border-color: #06D6A0; /* Green */ }
+
+        .platform-icon {
+            font-size: 3.5rem;
+            line-height: 1;
+            margin-bottom: 1rem;
+            height: 65px; /* Adjusted for better vertical alignment */
+        }
+        .java-icon { color: #EF476F; /* Red */ }
+        .android-icon { color: #06D6A0; /* Green */ }
+
+        .platform-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #343A40;
+        }
+        .phone-mockup-simple {
+            width: 100px; /* Simplified for symbolic representation */
+            height: 200px;
+            background-color: #343A40;
+            border-radius: 1rem;
+            border: 4px solid #495057;
+            position: relative;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-around;
+            padding: 10px 5px;
+            flex-shrink: 0;
+        }
+        .phone-screen-symbol {
+            background-color: #E9ECEF;
+            border-radius: 0.5rem;
+            width: 80%;
+            height: 30px;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.75rem;
+            color: #6C757D;
+        }
+        .phone-button-symbol {
+            background-color: #26547C; /* Blue */
+            border-radius: 0.5rem;
+            width: 60%;
+            height: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 0.6rem;
+            font-weight: 600;
+        }
+        .phone-code-symbol {
+            font-family: monospace;
+            font-size: 0.5rem;
+            color: #06D6A0; /* Green */
+            background-color: #212529;
+            padding: 3px 5px;
+            border-radius: 3px;
+            width: 90%;
+            text-align: left;
+            margin-top: 5px;
+            line-height: 1;
+        }
+
+        /* --- Styles for Slide 3 (UI Components) --- */
+        .infographic-card {
+            background-color: #FFFFFF;
+            border-radius: 1.5rem;
+            padding: 2rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            border: 2px solid #E5E7EB;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            height: 100%;
+        }
+        .infographic-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px -8px rgba(0, 0, 0, 0.15), 0 10px 10px -8px rgba(0, 0, 0, 0.08);
+        }
+        .icon-symbol {
+            font-size: 3.8rem;
+            line-height: 1;
+            margin-bottom: 1.25rem;
+            height: 65px;
+            color: #26547C; /* Blue */
+        }
+        .component-title {
+            font-size: 1.9rem;
+            font-weight: 800;
+            color: #111827;
+            margin-bottom: 0.75rem;
+        }
+        .role-text {
+            color: #4B5563;
+            font-size: 1.05rem;
+            margin-bottom: 1.5rem;
+            min-height: 40px;
+            flex-grow: 1; /* Allows text to expand and align bottoms */
+        }
+        .attribute-section {
+            background-color: #F3F4F6;
+            border-radius: 1rem;
+            padding: 1rem;
+            width: 100%;
+            margin-top: auto;
+            border: 1px solid #E5E7EB;
+        }
+        .attribute-title {
+            font-weight: 700;
+            color: #1F2937;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+        .attribute-value {
+            font-family: monospace;
+            background-color: #26547C; /* Blue */
+            color: #F9FAFB;
+            padding: 0.35rem 0.85rem;
+            border-radius: 0.6rem;
+            font-size: 0.9rem;
+            display: inline-block;
+        }
+        .mock-element {
+            border: 2px solid #06D6A0; /* Green */
+            background-color: #D6FAE0; /* Lighter Green */
+            border-radius: 0.75rem;
+            padding: 0.85rem;
+            margin-top: 1.5rem;
+            width: 90%;
+            font-size: 1rem;
+            color: #065F46;
+            text-align: center;
+            font-weight: 600;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .mock-button {
+            background-color: #FCBF49; /* Orange */
+            color: #111827;
+            font-weight: 700;
+            border-radius: 0.75rem;
+            padding: 0.85rem 1.75rem;
+            box-shadow: 0 4px 12px rgba(252, 191, 73, 0.4);
+        }
+        .mock-text-output {
+            background-color: #FFD166; /* Yellow */
+            border: 2px solid #FCBF49; /* Orange */
+            color: #111827;
+        }
+
+        /* --- Styles for Slide 4 (Layout Design) --- */
+        .layout-content-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            align-items: center;
+            width: 100%;
+        }
+        @media (min-width: 768px) {
+            .layout-content-grid {
+                flex-direction: row;
+                justify-content: space-around;
+            }
+        }
+        .layout-phone-mockup {
+            background-color: #343A40;
+            border-radius: 2rem;
+            border: 8px solid #495057;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 1rem;
+            overflow: hidden;
+            width: 280px;
+            height: 580px;
+            flex-shrink: 0; /* Prevents shrinking in flex row */
+        }
+        .layout-screen-content {
+            background-color: #E9ECEF;
+            width: 100%;
+            height: 100%;
+            border-radius: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1.5rem;
+            box-sizing: border-box;
+            gap: 1.5rem;
+        }
+        .layout-screen-header {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #26547C; /* Blue */
+            margin-bottom: 1rem;
+            border-bottom: 3px solid #FCBF49; /* Orange */
+            padding-bottom: 0.75rem;
+            width: 90%;
+            text-align: center;
+        }
+        .layout-mock-input {
+            width: 90%;
+            padding: 1rem;
+            border: 2px dashed #06D6A0; /* Green */
+            border-radius: 0.75rem;
+            background-color: #F0FFF4; /* Light Green */
+            font-size: 1.05rem;
+            color: #065F46; /* Dark Green */
+            text-align: center;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .layout-mock-button {
+            width: 80%;
+            padding: 1.25rem;
+            background-color: #EF476F; /* Red */
+            color: white;
+            border-radius: 0.75rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            box-shadow: 0 5px 15px rgba(239, 71, 111, 0.4);
+            text-align: center;
+        }
+        .layout-mock-output {
+            width: 90%;
+            padding: 1rem;
+            border: 2px dashed #FCBF49; /* Orange */
+            border-radius: 0.75rem;
+            background-color: #FFFBEB; /* Light Yellow */
+            font-size: 1.05rem;
+            color: #D97706; /* Dark Orange */
+            text-align: center;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .xml-code-snippet {
+            background-color: #212529; /* Dark background for code */
+            color: #F8F9FA; /* Light text */
+            padding: 2rem;
+            border-radius: 1rem;
+            text-align: left;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+            font-size: 0.8rem;
+            line-height: 1.6;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+            overflow-x: auto;
+            border: 1px solid #495057;
+            width: 100%;
+            max-width: 480px;
+        }
+        .xml-code-snippet .xml-tag { color: #06D6A0; } /* Green */
+        .xml-code-snippet .xml-attr { color: #FFD166; } /* Yellow */
+        .xml-code-snippet .xml-value { color: #EF476F; } /* Red */
+        .xml-code-snippet .xml-id { color: #FCBF49; } /* Orange */
+
+        /* --- Styles for Slide 5 (Java-XML Connection) --- */
+        .code-explanation {
+            font-size: 1.1rem;
+            color: #495057;
+            margin-bottom: 2rem;
+        }
+        .code-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            align-items: center;
+            width: 100%;
+        }
+        @media (min-width: 768px) {
+            .code-grid {
+                flex-direction: row;
+                justify-content: space-around;
+                align-items: flex-start;
+            }
+        }
+        .code-block-with-title {
+             background-color: #212529; /* Dark background */
+            color: #F8F9FA; /* Light text */
+            padding: 2rem;
+            border-radius: 1rem;
+            text-align: left;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+            font-size: 0.8rem;
+            line-height: 1.6;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+            overflow-x: auto;
+            border: 1px solid #495057;
+            flex: 1;
+            min-width: 300px;
+            max-width: 45%;
+        }
+        .code-block-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #06D6A0; /* Green */
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        .java-id-highlight { color: #FCBF49; font-weight: bold; } /* Orange */
+        .connection-arrow {
+            font-size: 3rem;
+            color: #26547C; /* Blue */
+            margin: 1rem 0;
+            transform: rotate(90deg); /* For mobile vertical layout */
+            font-weight: bold;
+        }
+        @media (min-width: 768px) {
+            .connection-arrow {
+                transform: rotate(0deg); /* For desktop horizontal layout */
+                margin: 0 2rem;
+            }
+        }
+
+        /* --- Styles for Slide 8 (Displaying Output) --- */
+        .output-content-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+            width: 100%;
+        }
+        @media (min-width: 768px) {
+            .output-content-section {
+                flex-direction: row;
+                justify-content: space-around;
+                align-items: flex-start;
+            }
+        }
+        .output-phone-mockup {
+            background-color: #343A40;
+            border-radius: 2rem;
+            border: 8px solid #495057;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 1rem;
+            overflow: hidden;
+            width: 280px;
+            height: 580px;
+            flex-shrink: 0;
+        }
+        .output-screen-content {
+            background-color: #E9ECEF;
+            width: 100%;
+            height: 100%;
+            border-radius: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1.5rem;
+            box-sizing: border-box;
+            gap: 1.5rem;
+        }
+        .output-screen-header {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #26547C; /* Blue */
+            margin-bottom: 1rem;
+            border-bottom: 3px solid #FCBF49; /* Orange */
+            padding-bottom: 0.75rem;
+            width: 90%;
+            text-align: center;
+        }
+        .app-input-general {
+            width: 90%;
+            padding: 1rem;
+            border: 1px solid #CCC;
+            border-radius: 0.75rem;
+            background-color: #FFFFFF;
+            font-size: 1.05rem;
+            color: #495057;
+            text-align: center;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .app-button-general {
+            width: 80%;
+            padding: 1.25rem;
+            background-color: #EF476F; /* Red */
+            color: white;
+            border-radius: 0.75rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            box-shadow: 0 5px 15px rgba(239, 71, 111, 0.4);
+            text-align: center;
+        }
+        .app-output-after {
+            background-color: #D6FAE0; /* Light Green */
+            border: 2px solid #06D6A0; /* Green */
+            border-radius: 0.75rem;
+            font-size: 1.05rem;
+            font-weight: 600;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: all 0.5s ease-in-out;
+            width: 90%; /* Ensure width is applied */
+            padding: 1rem; /* Ensure padding is applied */
+        }
+        .output-code-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #FFD166; /* Yellow */
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        /* --- Styles for Slide 9 (Error Handling) --- */
+        .error-phone-mockup { /* Specific styling for error state */
+            background-color: #343A40;
+            border-radius: 2rem;
+            border: 8px solid #495057;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 1rem;
+            overflow: hidden;
+            width: 280px;
+            height: 580px;
+            flex-shrink: 0;
+        }
+        .error-screen-content { /* Specific styling for error state */
+            background-color: #E9ECEF;
+            width: 100%;
+            height: 100%;
+            border-radius: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1.5rem;
+            box-sizing: border-box;
+            gap: 1.5rem;
+        }
+        .error-screen-header { /* Specific styling for error state */
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #26547C; /* Blue */
+            margin-bottom: 1rem;
+            border-bottom: 3px solid #FCBF49; /* Orange */
+            padding-bottom: 0.75rem;
+            width: 90%;
+            text-align: center;
+        }
+        .app-input-error {
+            width: 90%;
+            padding: 1rem;
+            border: 2px solid #EF476F; /* Red */
+            border-radius: 0.75rem;
+            background-color: #FFF5F7; /* Light Red */
+            font-size: 1.05rem;
+            color: #B22222; /* Darker Red */
+            text-align: center;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+            font-weight: 600;
+        }
+        .app-error-message {
+            width: 90%;
+            padding: 1rem;
+            background-color: #FEE2E2; /* Lighter Red */
+            border: 2px solid #EF476F; /* Red */
+            border-radius: 0.75rem;
+            font-size: 1rem;
+            color: #991B1B; /* Dark Red */
+            text-align: center;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-top: 1rem;
+        }
+        .error-code-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #EF476F; /* Red */
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        .highlight-line {
+            background-color: rgba(239, 71, 111, 0.2); /* Light red highlight */
+            display: block;
+            padding: 2px 0;
+            margin: -2px 0;
+            border-radius: 3px;
+        }
+
+        /* --- Styles for Slide 10 (Data Flow) --- */
+        .flow-diagram-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            position: relative;
+        }
+        .flow-step {
+            background-color: #E0F2F9; /* Light Blue */
+            border: 2px solid #26547C; /* Blue */
+            border-radius: 1.25rem;
+            padding: 1.25rem 2rem;
+            margin-bottom: 2.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #26547C; /* Blue */
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+            width: 90%;
+            max-width: 350px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 75px;
+            text-align: center;
+            transition: all 0.3s ease-in-out;
+        }
+        .flow-step:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+        }
+        .arrow {
+            width: 3px;
+            height: 30px;
+            background-color: #FCBF49; /* Orange */
+            position: relative;
+            margin-bottom: 2.5rem;
+        }
+        .arrow::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-top: 15px solid #FCBF49; /* Orange */
+        }
+        .flow-step:last-child {
+            margin-bottom: 0;
+        }
+        .phone-mockup-final {
+            background-color: #343A40;
+            border-radius: 2rem;
+            border: 8px solid #495057;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 1rem;
+            overflow: hidden;
+            width: 280px;
+            height: 580px;
+            margin-top: 3rem;
+            flex-shrink: 0;
+        }
+        .phone-screen-final {
+            background-color: #E9ECEF;
+            width: 100%;
+            height: 100%;
+            border-radius: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1.5rem;
+            box-sizing: border-box;
+            gap: 1.5rem;
+        }
+        .app-header-final {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #26547C; /* Blue */
+            margin-bottom: 1rem;
+            border-bottom: 3px solid #FCBF49; /* Orange */
+            padding-bottom: 0.75rem;
+            width: 90%;
+            text-align: center;
+        }
+        .app-input-final {
+            width: 90%;
+            padding: 1rem;
+            border: 1px solid #CCC;
+            border-radius: 0.75rem;
+            background-color: #FFFFFF;
+            font-size: 1.05rem;
+            color: #495057;
+            text-align: center;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .app-button-final {
+            width: 80%;
+            padding: 1.25rem;
+            background-color: #EF476F; /* Red */
+            color: white;
+            border-radius: 0.75rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            box-shadow: 0 5px 15px rgba(239, 71, 111, 0.4);
+            text-align: center;
+        }
+        .app-output-final {
+            width: 90%;
+            padding: 1rem;
+            background-color: #D6FAE0; /* Light Green */
+            border: 2px solid #06D6A0; /* Green */
+            border-radius: 0.75rem;
+            font-size: 1.1rem;
+            color: #065F46; /* Dark Green */
+            text-align: center;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        /* Navigation Buttons */
+        .nav-button {
+            background-color: #26547C; /* Blue */
+            color: white;
+            font-weight: bold;
+            padding: 0.75rem 1.5rem;
+            border-radius: 9999px; /* Full rounded */
+            box-shadow: 0 4px 15px rgba(38, 84, 124, 0.4);
+            transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out;
+        }
+        .nav-button:hover:not(:disabled) {
+            background-color: #1a3c5a; /* Darker blue on hover */
+            transform: scale(1.05);
+        }
+        .nav-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        .slide-counter {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #495057;
+            align-self: center;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="presentation-wrapper">
+        <!-- בס"ד on top right -->
+        <div class="absolute top-4 right-6 text-sm text-gray-500" style="direction: rtl;">
+            בס"ד
+        </div>
+
+        <div id="presentation-container" class="w-full h-full flex flex-col justify-between">
+            <!-- Slide 1: ממיר יחידות: מ-Java ל-Android UI -->
+            <div class="slide" id="slide-1">
+                <h1 class="slide-title">ממיר יחידות: מ-Java ל-Android UI</h1>
+                <p class="slide-subtitle">בונים את הגשר בין הלוגיקה לממשק</p>
+                <div class="connection-diagram">
+                    <div class="platform-bubble java-bubble">
+                        <span class="platform-icon java-icon">☕</span>
+                        <span class="platform-name">Java</span>
+                        <span class="platform-name text-sm text-gray-500 mt-1">לוגיקה וחישובים</span>
+                    </div>
+                    <div class="phone-mockup-simple">
+                        <div class="phone-screen-symbol">קלט (EditText)</div>
+                        <div class="phone-button-symbol">פעולה (Button)</div>
+                        <div class="phone-code-symbol">int x = getVal();<br>display(x);</div>
+                        <div class="phone-screen-symbol">פלט (TextView)</div>
+                    </div>
+                    <div class="platform-bubble android-bubble">
+                        <span class="platform-icon android-icon">🤖</span>
+                        <span class="platform-name">Android</span>
+                        <span class="platform-name text-sm text-gray-500 mt-1">ממשק משתמש</span>
+                    </div>
+                </div>
+                <!-- Added instructor's name below the images -->
+                <p class="text-base text-gray-600 mt-6 font-semibold">
+                    שם המנחה: מורן חיים
+                </p>
+            </div>
+
+            <!-- Slide 2: מה נבנה היום? -->
+            <div class="slide" id="slide-2">
+                <h1 class="slide-title">מה נבנה היום?</h1>
+                <h2 class="slide-subtitle">אפליקציית ממיר טמפרטורות: צלזיוס לפרנהייט</h2>
+                <p class="text-lg text-gray-700 mb-6">
+                    המטרה: להבין איך אפליקציה:
+                </p>
+                <ul class="list-disc list-inside text-lg text-gray-700 space-y-2 pr-6">
+                    <li>מקבלת קלט מספרי מהמשתמש.</li>
+                    <li>מעבדת את הנתונים (מבצעת חישוב).</li>
+                    <li>מציגה פלט למשתמש.</li>
+                </ul>
+                <div class="mt-8 flex justify-center">
+                    <!-- Keeping placeholder for slide 2 as per instruction interpretation -->
+                    <img src="https://placehold.co/350x250/F0F4F8/60A5FA?text=Conversion%20App%0ACelsius%20%E2%86%92%20Fahrenheit%0A" alt="אפליקציית ממיר יחידות" class="rounded-lg shadow-md border border-gray-300">
+                </div>
+            </div>
+
+            <!-- Slide 3: רכיבי UI לקלט ופלט -->
+            <div class="slide" id="slide-3">
+                <h1 class="slide-title text-gray-800">רכיבי מפתח לממשק אינטראקטיבי</h1>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch max-w-5xl w-full">
+                    <div class="infographic-card">
+                        <div class="icon-symbol">✏️</div>
+                        <h2 class="component-title">EditText</h2>
+                        <p class="role-text">מאפשר למשתמש להקליד טקסט (מספרים, אותיות, סיסמאות). רכיב קלט עיקרי.</p>
+                        <div class="mock-element">הזן טקסט כאן...</div>
+                        <div class="attribute-section">
+                            <p class="attribute-title">מאפיין חשוב:</p>
+                            <p class="attribute-value">inputType</p>
+                        </div>
+                    </div>
+
+                    <div class="infographic-card">
+                        <div class="icon-symbol">👆</div>
+                        <h2 class="component-title">Button</h2>
+                        <p class="role-text">מפעיל פעולה או מבצע חישוב בלחיצת משתמש. רכיב הפעלה.</p>
+                        <div class="mock-element mock-button">לחץ לביצוע</div>
+                        <div class="attribute-section">
+                            <p class="attribute-title">אירוע מרכזי:</p>
+                            <p class="attribute-value">setOnClickListener</p>
+                        </div>
+                    </div>
+
+                    <div class="infographic-card">
+                        <div class="icon-symbol">💬</div>
+                        <h2 class="component-title">TextView</h2>
+                        <p class="role-text">מציג טקסט למשתמש (כותרות, תיאורים, ותוצאות דינמיות). רכיב פלט עיקרי.</p>
+                        <div class="mock-element mock-text-output">זוהי התוצאה שלך</div>
+                        <div class="attribute-section">
+                            <p class="attribute-title">פעולה עיקרית:</p>
+                            <p class="attribute-value">setText(String)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 4: עיצוב ה-Layout -->
+            <div class="slide" id="slide-4">
+                <h1 class="slide-title">עיצוב ה-Layout: קובץ `activity_main.xml`</h1>
+                <p class="slide-subtitle text-gray-700 mb-4">זהו ה"בד" שעליו אנחנו מציירים את ממשק המשתמש שלנו.</p>
+                <div class="layout-content-grid max-w-4xl w-full">
+                    <div class="layout-phone-mockup">
+                        <div class="layout-screen-content">
+                            <div class="layout-screen-header">ממיר יחידות</div>
+                            <div class="layout-mock-input">
+                                הכנס טמפרטורה בצלזיוס <br> (EditText)
+                            </div>
+                            <div class="layout-mock-button">
+                                המר לפרנהייט <br> (Button)
+                            </div>
+                            <div class="layout-mock-output">
+                                תוצאה: <br> (TextView)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="xml-code-snippet">
+<span class="comment">&lt;!-- קובץ עיצוב XML המגדיר את ממשק המשתמש --&gt;</span>
+<span class="xml-tag">&lt;EditText</span>
+    <span class="xml-attr">android:id=</span><span class="xml-value">"@+id/<span class="xml-id">celsiusInput</span>"</span>
+    <span class="xml-attr">android:inputType=</span><span class="xml-value">"numberDecimal"</span>
+    <span class="xml-attr">...</span>
+<span class="xml-tag">/&gt;</span>
+
+<span class="xml-tag">&lt;Button</span>
+    <span class="xml-attr">android:id=</span><span class="xml-value">"@+id/<span class="xml-id">convertButton</span>"</span>
+    <span class="xml-attr">android:layout_width=</span><span class="xml-value">"wrap_content"</span>
+    <span class="xml-attr">android:layout_height=</span><span class="xml-value">"wrap_content"</span>
+    <span class="xml-attr">android:text=</span><span class="xml-value">"המר לפרנהייט"</span><span class="xml-tag"> /&gt;</span>
+
+<span class="xml-tag">&lt;TextView</span>
+    <span class="xml-attr">android:id=</span><span class="xml-value">"@+id/<span class="xml-id">fahrenheitResult</span>"</span>
+    <span class="xml-attr">android:layout_width=</span><span class="xml-value">"wrap_content"</span>
+    <span class="xml-attr">android:layout_height=</span><span class="xml-value">"wrap_content"</span>
+    <span class="xml-attr">android:text=</span><span class="xml-value">"תוצאה:"</span>
+    <span class="xml-attr">android:textSize=</span><span class="xml-value">"20sp"</span><span class="xml-tag"> /&gt;</span>
+                    </div>
+                </div>
+                <p class="text-sm text-gray-600 mt-4">
+                    (הערה: יש להוסיף הגדרות Constraints למיקום הרכיבים ב-ConstraintLayout)
+                </p>
+            </div>
+
+            <!-- Slide 5: קישור UI לקוד -->
+            <div class="slide" id="slide-5">
+                <h1 class="slide-title">קישור רכיבי UI לקוד Java (`MainActivity.java`)</h1>
+                <p class="code-explanation">כדי שקוד ה-Java יוכל לתקשר עם רכיבי ה-UI שיצרנו ב-XML, עלינו "למצוא" אותם באמצעות ה-`id` הייחודי שלהם.</p>
+                <div class="code-grid max-w-5xl w-full">
+                    <div class="code-block-with-title">
+                        <div class="code-block-title">קובץ XML (`activity_main.xml`)</div>
+                        <pre>
+<span class="xml-tag">&lt;EditText</span>
+    <span class="xml-attr">android:id=</span><span class="xml-value">"@+id/<span class="xml-id-highlight">celsiusInput</span>"</span>
+    <span class="xml-attr">android:inputType=</span><span class="xml-value">"numberDecimal"</span>
+    <span class="xml-attr">...</span>
+<span class="xml-tag">/&gt;</span>
+
+<span class="xml-tag">&lt;Button</span>
+    <span class="xml-attr">android:id=</span><span class="xml-value">"@+id/<span class="xml-id-highlight">convertButton</span>"</span>
+    <span class="xml-attr">android:text=</span><span class="xml-value">"המר לפרנהייט"</span>
+    <span class="xml-attr">...</span>
+<span class="xml-tag">/&gt;</span>
+
+<span class="xml-tag">&lt;TextView</span>
+    <span class="xml-attr">android:id=</span><span class="xml-value">"@+id/<span class="xml-id-highlight">fahrenheitResult</span>"</span>
+    <span class="xml-attr">android:text=</span><span class="xml-value">"תוצאה:"</span>
+    <span class="xml-attr">...</span>
+<span class="xml-tag">/&gt;</span></pre>
+                    </div>
+
+                    <div class="connection-arrow">➡️</div>
+
+                    <div class="code-block-with-title">
+                        <div class="code-block-title">קוד Java (`MainActivity.java`)</div>
+                        <pre>
+<span class="java-keyword">public class</span> <span class="java-type">MainActivity</span> <span class="java-keyword">extends</span> <span class="java-type">AppCompatActivity</span> {
+
+    <span class="java-type">EditText</span> <span class="java-variable">celsiusInput</span>;
+    <span class="java-type">Button</span> <span class="java-variable">convertButton</span>;
+    <span class="java-type">TextView</span> <span class="java-variable">fahrenheitResult</span>;
+
+    <span class="java-keyword">@Override</span>
+    <span class="java-keyword">protected void</span> <span class="java-method">onCreate</span>(<span class="java-type">Bundle</span> <span class="java-variable">savedInstanceState</span>) {
+        <span class="java-keyword">super</span>.<span class="java-method">onCreate</span>(<span class="java-variable">savedInstanceState</span>);
+        <span class="java-method">setContentView</span>(<span class="java-type">R</span>.<span class="java-variable">layout</span>.<span class="java-id-highlight">activity_main</span>);
+
+        <span class="java-comment">// מוצאים את הרכיבים לפי ה-ID שלהם</span>
+        <span class="java-variable">celsiusInput</span> = <span class="java-method">findViewById</span>(<span class="java-type">R</span>.<span class="java-variable">id</span>.<span class="java-id-highlight">celsiusInput</span>);
+        <span class="java-variable">convertButton</span> = <span class="java-method">findViewById</span>(<span class="java-type">R</span>.<span class="java-variable">id</span>.<span class="java-id-highlight">convertButton</span>);
+        <span class="java-variable">fahrenheitResult</span> = <span class="java-method">findViewById</span>(<span class="java-type">R</span>.<span class="java-variable">id</span>.<span class="java-id-highlight">fahrenheitResult</span>);
+    }
+}</pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 6: קבלת קלט והמרת נתונים -->
+            <div class="slide" id="slide-6">
+                <h1 class="slide-title">קבלת קלט והמרת נתונים</h1>
+                <h2 class="text-2xl font-semibold text-gray-800 mb-2">קבלת טקסט מ-EditText:</h2>
+                <pre><code>
+String celsiusString = celsiusInput.getText().toString();
+// חשוב! getText() מחזיר Editable, לכן חובה להוסיף toString()
+                </code></pre>
+                <h2 class="text-2xl font-semibold text-gray-800 mt-6 mb-2">המרת טקסט למספר (Double):</h2>
+                <p class="text-lg text-gray-700 mb-4 font-bold">
+                    חשוב: קלט ממשתמש הוא תמיד טקסט! חייבים להמיר אותו למספר כדי לבצע חישובים.
+                </p>
+                <pre><code>
+double celsius = Double.parseDouble(celsiusString);
+// Double.parseDouble() ממיר String למספר מסוג double.
+                </code></pre>
+                <p class="text-lg text-red-600 mt-4 font-semibold">
+                    טיפול בשגיאות (מיד נרחיב): מה קורה אם המשתמש מזין "abc" במקום מספר?
+                </p>
+            </div>
+
+            <!-- Slide 7: יישום הלוגיקה העסקית (חישוב) -->
+            <div class="slide" id="slide-7">
+                <h1 class="slide-title">יישום הלוגיקה החישובית</h1>
+                <p class="text-lg text-gray-700 mb-4">את הלוגיקה נמקם בתוך ה"מאזין" (Listener) של הכפתור, שיופעל בלחיצה.</p>
+                <h2 class="text-xl font-semibold text-gray-800 mb-2">נוסחת המרה ממעלות צלזיוס לפרנהייט:</h2>
+                <p class="text-2xl text-blue-800 font-mono mb-4">
+                    $$F = C \times \frac{9}{5} + 32$$
+                </p>
+                <pre><code>
+import android.view.View; // חובה להוסיף ייבוא זה
+
+// בתוך MainActivity.java, בתוך שיטת onCreate() לאחר איתור הרכיבים
+convertButton.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View v) {
+        // שלב 1: קבלת קלט המשתמש
+        String celsiusString = celsiusInput.getText().toString();
+
+        // בדיקה אם השדה ריק (טיפול שגיאה ראשוני)
+        if (celsiusString.isEmpty()) {
+            fahrenheitResult.setText("שגיאה: אנא הכנס טמפרטורה.");
+            return; // עצור את פעולת הלחצן כאן
+        }
+
+        try {
+            // שלב 2: המרת קלט טקסטואלי למספר
+            double celsius = Double.parseDouble(celsiusString);
+
+            // שלב 3: ביצוע החישוב
+            double fahrenheit = celsius * 9.0 / 5.0 + 32.0;
+
+            // שלב 4: הצגת התוצאה למשתמש (נרחיב בשקף הבא)
+            // fahrenheitResult.setText("הטמפרטורה בפרנהייט: " + fahrenheit);
+
+        } catch (NumberFormatException e) {
+            // טיפול בשגיאה אם הקלט אינו מספר (נרחיב בשקף נפרד)
+            fahrenheitResult.setText("שגיאה: אנא הכנס מספר חוקי.");
+        }
+    }
+});
+                </code></pre>
+            </div>
+
+            <!-- Slide 8: הצגת פלט ב-TextView -->
+            <div class="slide" id="slide-8">
+                <h1 class="slide-title">הצגת פלט ב-`TextView`</h1>
+                <p class="slide-subtitle text-gray-700">לאחר שביצענו את החישוב, אנו רוצים להציג את התוצאה למשתמש.</p>
+                <div class="output-content-section max-w-5xl w-full">
+                    <div class="output-phone-mockup">
+                        <div class="output-screen-content">
+                            <div class="output-screen-header">ממיר טמפרטורה</div>
+                            <input type="text" value="25.0" class="app-input-general" readonly>
+                            <div class="app-button-general">המר לפרנהייט</div>
+                            <div class="app-output-after">הטמפרטורה בפרנהייט: 77.00</div>
+                        </div>
+                    </div>
+                    <div class="code-block-with-title">
+                        <div class="output-code-title">קוד Java (`MainActivity.java`)</div>
+                        <pre>
+<span class="java-comment">// בתוך ה-onClick() של הכפתור:</span>
+
+<span class="java-keyword">double</span> <span class="java-variable">celsius</span> = <span class="java-comment">/* ... קלט מהמשתמש ... */</span>;
+<span class="java-keyword">double</span> <span class="java-variable">fahrenheit</span> = <span class="java-variable">celsius</span> * 9.0 / 5.0 + 32.0;
+
+<span class="java-comment">// 1. הצגת התוצאה באמצעות setText()</span>
+<span class="java-variable">fahrenheitResult</span>.<span class="java-method">setText</span>(<span class="java-string">"הטמפרטורה בפרנהייט: "</span> + <span class="java-variable">fahrenheit</span>);
+
+<span class="java-comment">// 2. עיצוב הפלט (מומלץ)</span>
+<span class="java-keyword">String</span> <span class="java-variable">formattedResult</span> = <span class="java-type">String</span>.<span class="java-method">format</span>(<span class="java-string">"%.2f"</span>, <span class="java-variable">fahrenheit</span>);
+<span class="java-variable">fahrenheitResult</span>.<span class="java-method">setText</span>(<span class="java-string">"הטמפרטורה בפרנהייט: "</span> + <span class="java-variable">formattedResult</span>);
+
+<span class="java-comment">// הפונקציה String.format() מאפשרת לעצב</span>
+<span class="java-comment">// מחרוזות בצורה גמישה, לדוגמה: 2 ספרות אחרי הנקודה.</span>
+                        </pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 9: טיפול בשגיאות קלט -->
+            <div class="slide" id="slide-9">
+                <h1 class="slide-title">טיפול בשגיאות קלט (`Error Handling`)</h1>
+                <p class="slide-subtitle">אפליקציה יציבה וידידותית למשתמש חייבת לטפל במצבי שגיאה, כמו קלט לא חוקי.</p>
+                <div class="content-grid max-w-5xl w-full">
+                    <div class="error-phone-mockup">
+                        <div class="error-screen-content">
+                            <div class="error-screen-header">ממיר טמפרטורה</div>
+                            <input type="text" value="טעות" class="app-input-error" readonly>
+                            <div class="app-button-general">המר לפרנהייט</div>
+                            <div class="app-error-message">שגיאה: אנא הכנס מספר חוקי.</div>
+                        </div>
+                    </div>
+                    <div class="code-block-with-title">
+                        <div class="error-code-title">קוד Java (`MainActivity.java`)</div>
+                        <pre>
+<span class="java-comment">// בתוך ה-onClick() של הכפתור:</span>
+
+<span class="java-keyword">String</span> <span class="java-variable">celsiusString</span> = <span class="java-variable">celsiusInput</span>.<span class="java-method">getText</span>().<span class="java-method">toString</span>();
+
+<span class="java-comment">// 1. בדיקה אם השדה ריק</span>
+<span class="java-keyword">if</span> (<span class="java-variable">celsiusString</span>.<span class="java-method">isEmpty</span>()) {
+    <span class="java-variable">fahrenheitResult</span>.<span class="java-method">setText</span>(<span class="java-string">"שגיאה: אנא הכנס טמפרטורה."</span>);
+    <span class="java-keyword">return</span>;
+}
+
+<span class="java-keyword">try</span> {
+    <span class="java-comment">// 2. ניסיון להמיר ולחשב</span>
+    <span class="java-keyword">double</span> <span class="java-variable">celsius</span> = <span class="highlight-line"><span class="java-type">Double</span>.<span class="java-method">parseDouble</span>(<span class="java-variable">celsiusString</span>);</span>
+    <span class="java-keyword">double</span> <span class="java-variable">fahrenheit</span> = <span class="java-variable">celsius</span> * 9.0 / 5.0 + 32.0;
+    <span class="java-variable">fahrenheitResult</span>.<span class="java-method">setText</span>(<span class="java-string">"הטמפרטורה בפרנהייט: "</span> + <span class="java-type">String</span>.<span class="java-method">format</span>(<span class="java-string">"%.2f"</span>, <span class="java-variable">fahrenheit</span>));
+
+} <span class="java-keyword">catch</span> (<span class="java-type">NumberFormatException</span> <span class="java-variable">e</span>) {
+    <span class="highlight-line"><span class="java-comment">// 3. טיפול בשגיאת המרה (קלט שאינו מספר)</span></span>
+    <span class="highlight-line"><span class="java-variable">fahrenheitResult</span>.<span class="java-method">setText</span>(<span class="java-string">"שגיאה: אנא הכנס מספר חוקי (לדוגמה: 25.5)."</span>);</span>
+}
+                        </pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 10: זרימת הנתונים -->
+            <div class="slide" id="slide-10">
+                <h1 class="slide-title">סיכום: זרימת הנתונים באפליקציה</h1>
+                <p class="slide-subtitle text-gray-700">איך כל החלקים מתחברים יחד כדי ליצור חוויה אינטראקטיבית?</p>
+                <div class="flow-diagram-container max-w-5xl w-full">
+                    <div class="flow-step">
+                        <span class="text-xs absolute top-2 right-4 text-gray-500">שלב 1</span>
+                        המשתמש מזין נתונים ל-<span class="font-bold text-orange-600">`EditText`</span>
+                    </div>
+                    <div class="arrow"></div>
+                    <div class="flow-step">
+                        <span class="text-xs absolute top-2 right-4 text-gray-500">שלב 2</span>
+                        לחיצה על <span class="font-bold text-orange-600">`Button`</span> מפעילה את ה-<span class="font-bold text-orange-600">`OnClickListener`</span>
+                    </div>
+                    <div class="arrow"></div>
+                    <div class="flow-step">
+                        <span class="text-xs absolute top-2 right-4 text-gray-500">שלב 3</span>
+                        הקוד ב-<span class="font-bold text-orange-600">Java</span> קורא את הנתונים וממיר אותם
+                    </div>
+                    <div class="arrow"></div>
+                    <div class="flow-step">
+                        <span class="text-xs absolute top-2 right-4 text-gray-500">שלב 4</span>
+                        הלוגיקה (חישוב) מתבצעת
+                    </div>
+                    <div class="arrow"></div>
+                    <div class="flow-step">
+                        <span class="text-xs absolute top-2 right-4 text-gray-500">שלב 5</span>
+                        התוצאה מוצגת ב-<span class="font-bold text-orange-600">`TextView`</span>
+                    </div>
+                </div>
+                <div class="phone-mockup-final">
+                    <div class="phone-screen-final">
+                        <div class="app-header-final">ממיר טמפרטורה</div>
+                        <input type="text" value="25.0" class="app-input-final" readonly>
+                        <div class="app-button-final">המר לפרנהייט</div>
+                        <div class="app-output-final">הטמפרטורה בפרנהייט: 77.00</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 11: תרגיל מעשי בכיתה -->
+            <div class="slide" id="slide-11">
+                <h1 class="slide-title">תרגיל מעשי בכיתה</h1>
+                <p class="slide-subtitle text-gray-700">הגיע הזמן ליישם את מה שלמדנו!</p>
+                <h2 class="text-2xl font-bold text-blue-800 mb-6">בחרו אחת מהאפשרויות הבאות:</h2>
+
+                <div class="mb-8 p-4 bg-blue-50 rounded-lg shadow-sm w-full max-w-3xl">
+                    <h2 class="text-2xl font-semibold text-blue-800 mb-2">אפשרות 1: ממיר טמפרטורה דו-כיווני</h2>
+                    <ul class="list-disc list-inside text-lg text-blue-700 space-y-2 pr-6">
+                        <li>הרחיבו את אפליקציית ממיר הצלזיוס-פרנהייט.</li>
+                        <li>הוסיפו כפתור נוסף: "המר לצלזיוס".</li>
+                        <li>יישמו את הלוגיקה ההפוכה: $$C = (F - 32) \times \frac{5}{9}$$</li>
+                        <li>ודאו שאתם משתמשים באותו <code>EditText</code> לקלט, אך התוצאה מוצגת ב-<code>TextView</code> המתאים (או שאלו כיצד לשנות את הכותרת של ה-<code>TextView</code>).</li>
+                        <li>**חובה:** ודאו שטיפול השגיאות עובד לשני הכיוונים!</li>
+                    </ul>
+                </div>
+
+                <div class="mb-8 p-4 bg-green-50 rounded-lg shadow-sm w-full max-w-3xl">
+                    <h2 class="text-2xl font-semibold text-green-800 mb-2">אפשרות 2: ממיר יחידות חדש - מטרים לרגל</h2>
+                    <ul class="list-disc list-inside text-lg text-green-700 space-y-2 pr-6">
+                        <li>צרו אפליקציה חדשה הממירה מטרים לרגל ($1 \text{ מטר} = 3.28084 \text{ רגל}$).</li>
+                        <li>השתמשו ב-<code>EditText</code> לקלט, <code>Button</code> להמרה ו-<code>TextView</code> לפלט.</li>
+                    </ul>
+                </div>
+
+                <p class="text-xl font-bold text-red-600 mt-8">חובה: לטפל בשגיאות קלט!</p>
+                <p class="text-gray-600 text-sm mt-2">
+                    טיפ: חשבו על ההיגיון שעומד מאחורי כל המרה, ואיך הייתם פותרים זאת ב-Java לפני שהייתם בונים את ה-UI.
+                </p>
+            </div>
+
+            <!-- Slide 12: סיכום ושיקוף -->
+            <div class="slide" id="slide-12">
+                <h1 class="slide-title">סיכום ושיקוף</h1>
+                <p class="slide-subtitle text-gray-700">
+                    היום בנינו גשר בין ידע ה-Java שלכם לעולם האפליקציות.
+                </p>
+                <ul class="list-disc list-inside text-lg text-gray-700 space-y-2 pr-6 mb-6">
+                    <li>למדנו על רכיבי UI אינטראקטיביים (`EditText`, `Button`, `TextView`).</li>
+                    <li>הבנו כיצד לקבל קלט, לבצע חישוב, ולהציג פלט.</li>
+                    <li>למדנו על החשיבות של טיפול בשגיאות קלט (`try-catch`).</li>
+                </ul>
+                <div class="mt-8 flex justify-center w-full max-w-md">
+                    <img id="learningEnvImage" src="https://placehold.co/400x250/C6F6D5/2F855A?text=טוען+תמונה..." alt="[תמונה של סביבת למידה אינטראקטיבית]" class="rounded-lg shadow-md border border-gray-300 w-full h-auto object-cover">
+                </div>
+                <p class="text-xl font-bold text-indigo-700 mt-8">
+                    אתם מוזמנים לפנות אלי בכל שאלה
+                    <br>
+                    בהצלחה ויומבורך :) מורן חיים
+                </p>
+            </div>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="flex justify-between w-full mt-8 px-4">
+            <button id="prevBtn" class="nav-button">
+                שקף קודם
+            </button>
+            <span id="slideCounter" class="slide-counter"></span>
+            <button id="nextBtn" class="nav-button">
+                שקף הבא
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        const presentationWrapper = document.querySelector('.presentation-wrapper');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const slideCounter = document.getElementById('slideCounter');
+        let currentSlideIndex = 0;
+
+        function updateSlideHeight() {
+            // This function is now simplified as max-height on .presentation-wrapper handles most overflow.
+            // If specific slides need dynamic height adjustments that are not simply overflow,
+            // that logic would be added here. For now, it's not strictly necessary for basic scrolling.
+        }
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.remove('active');
+                slide.style.display = 'none'; // Ensure non-active slides are fully hidden
+            });
+
+            currentSlideIndex = index;
+            const activeSlide = slides[currentSlideIndex];
+            if (activeSlide) {
+                activeSlide.classList.add('active');
+                activeSlide.style.display = 'flex'; // Make sure active slide uses flex display
+
+                // If on slide 12, generate and load the image
+                if (currentSlideIndex === 11) { // Slide 12 is index 11
+                    generateAndDisplayImage();
+                }
+
+                // No longer dynamically setting min-height on wrapper here to allow content to overflow within the slide
+                // updateSlideHeight(); // Call if additional height adjustments are needed
+            }
+            updateButtons();
+            updateSlideCounter();
+        }
+
+        function updateButtons() {
+            prevBtn.disabled = currentSlideIndex === 0;
+            nextBtn.disabled = currentSlideIndex === slides.length - 1;
+        }
+
+        function updateSlideCounter() {
+            slideCounter.textContent = `שקף ${currentSlideIndex + 1} מתוך ${slides.length}`;
+        }
+
+        prevBtn.addEventListener('click', () => {
+            if (currentSlideIndex > 0) {
+                currentSlideIndex--;
+                showSlide(currentSlideIndex);
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (currentSlideIndex < slides.length - 1) {
+                currentSlideIndex++;
+                showSlide(currentSlideIndex);
+            }
+            // Ensure next button is enabled/disabled correctly after changing slide
+        });
+
+        async function generateAndDisplayImage() {
+            const imageElement = document.getElementById('learningEnvImage');
+            // Set a temporary loading indicator
+            imageElement.src = "https://placehold.co/400x250/C6F6D5/2F855A?text=טוען+תמונה...";
+            imageElement.alt = "[טוען תמונה...]"; // Updated alt text to Hebrew
+
+            // The prompt is intentionally kept the same as the last version, as it already includes the request for
+            // "African American style" with "African-textured hair". Re-running with the same prompt might yield
+            // a better result from the image generation model due to its probabilistic nature.
+            const prompt = "A diverse group of attractive young adult students, aged 19+, in a high-tech classroom. The atmosphere is collaborative and happy, with students actively learning software engineering on laptops and working joyfully on shared projects. The classroom features a modern layout with comfortable workstations, inviting sofas, and a warm parquet-like floor. Large, beautiful windows provide a scenic view and ample natural light, creating a vibrant and professional educational setting. The group composition specifically includes: at least one male student with glasses, one male student with a light tanned skin tone, one very beautiful female student with particularly tanned skin, very dark brown to black wavy hair and glasses. Crucially, there must be at least one student (boy or girl) with a black or very dark brown skin tone, specifically of African American style, with African-textured hair. The overwhelming majority of the group are male, with at least two females present. Among the rest of the diverse students, exactly one should be of Asian descent, and the remaining students should be of diverse Israeli styles. The overall style is realistic photography.";
+            const payload = { instances: { prompt: prompt }, parameters: { "sampleCount": 1 } };
+            const apiKey = ""; // Leave as empty string for Canvas to provide
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${apiKey}`;
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+
+                if (result.predictions && result.predictions.length > 0 && result.predictions[0].bytesBase64Encoded) {
+                    const imageUrl = `data:image/png;base64,${result.predictions[0].bytesBase64Encoded}`;
+                    imageElement.src = imageUrl;
+                    imageElement.alt = "[תמונה של סביבת למידה אינטראקטיבית עם תלמידים מגוונים]"; // Updated alt text to Hebrew
+                } else {
+                    imageElement.src = "https://placehold.co/400x250/EF476F/FFFFFF?text=שגיאת+טעינת+תמונה";
+                    imageElement.alt = "[שגיאה בטעינת תמונה]"; // Updated alt text to Hebrew
+                    console.error("Image generation failed or returned unexpected format:", result);
+                }
+            } catch (error) {
+                imageElement.src = "https://placehold.co/400x250/EF476F/FFFFFF?text=שגיאת+רשת";
+                imageElement.alt = "[שגיאת רשת]"; // Updated alt text to Hebrew
+                console.error("Error generating image:", error);
+            }
+        }
+
+        // Initialize presentation on load
+        document.addEventListener('DOMContentLoaded', () => {
+            showSlide(currentSlideIndex);
+            // Re-adjust height on window resize - now less critical due to max-height, but still good practice
+            window.addEventListener('resize', updateSlideHeight);
+        });
+    </script>
+</body>
+</html>
