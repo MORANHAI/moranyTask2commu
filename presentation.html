@@ -1231,10 +1231,16 @@ convertButton.setOnClickListener(new View.OnClickListener() {
                 <div class="phone-mockup-final">
                     <div class="phone-screen-final">
                         <div class="app-header-final">ממיר טמפרטורה</div>
-                        <input type="text" value="25.0" class="app-input-final" readonly>
+
+<input type="text" id="celsiusInputFinal" class="app-input-interactive" placeholder="הכנס טמפרטורה בצלזיוס">
+<!--                         <input type="text" value="25.0" class="app-input-final" readonly> 
                         <div class="app-button-final">המר לפרנהייט</div>
-                        <div class="app-output-final">הטמפרטורה בפרנהייט: 77.00</div>
-                    </div>
+ -->
+<button id="convertButtonFinal" class="app-button-interactive">המר לפרנהייט</button>
+
+<!--                         <div class="app-output-final">הטמפרטורה בפרנהייט: 77.00</div>
+                    </div> -->
+<span id="fahrenheitResultFinal" class="app-output-interactive">הטמפרטורה בפרנהייט: </span>
                 </div>
             </div>
 
