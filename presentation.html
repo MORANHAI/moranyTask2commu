@@ -698,6 +698,71 @@
         .flow-step:last-child {
             margin-bottom: 0;
         }
+
+
+  /* Styles for interactive elements on slide 10 */
+        .app-input-interactive { /* New style for the interactive input field */
+            width: 90%;
+            padding: 1rem;
+            border: 1px solid #CCC;
+            border-radius: 0.75rem;
+            background-color: #FFFFFF;
+            font-size: 1.05rem;
+            color: #495057;
+            text-align: center;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .app-button-interactive { /* New style for the interactive button */
+            width: 80%;
+            padding: 1.25rem;
+            background-color: #EF476F; /* Red */
+            color: white;
+            border-radius: 0.75rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            box-shadow: 0 5px 15px rgba(239, 71, 111, 0.4);
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        .app-button-interactive:hover {
+            background-color: #d13a60; /* Darker red on hover */
+            transform: translateY(-2px);
+        }
+        .app-output-interactive { /* New style for the interactive output field */
+            width: 90%;
+            padding: 1rem;
+            background-color: #D6FAE0; /* Light Green */
+            border: 2px solid #06D6A0; /* Green */
+            border-radius: 0.75rem;
+            font-size: 1.1rem;
+            color: #065F46; /* Dark Green */
+            text-align: center;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            min-height: 50px; /* Ensure space for text */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        /* Error styles for interactive output */
+        .app-output-interactive.error {
+            background-color: #FEE2E2; /* Lighter Red */
+            border: 2px solid #EF476F; /* Red */
+            color: #991B1B; /* Dark Red */
+        }
+
+
+
+
+
+
+
+
+
+
+
+
         .phone-mockup-final {
             background-color: #343A40;
             border-radius: 2rem;
@@ -1352,6 +1417,55 @@ convertButton.setOnClickListener(new View.OnClickListener() {
             showSlide(currentSlideIndex);
             // Re-adjust height on window resize - now less critical due to max-height, but still good practice
             window.addEventListener('resize', updateSlideHeight);
+
+
+            // קבל הפניות לאלמנטים של שקף 10
+const celsiusInputFinal = document.getElementById('celsiusInputFinal');
+const convertButtonFinal = document.getElementById('convertButtonFinal');
+const fahrenheitResultFinal = document.getElementById('fahrenheitResultFinal');
+
+// הגדר טקסט ראשוני לשדה התוצאה
+if (fahrenheitResultFinal) {
+    fahrenheitResultFinal.textContent = "הטמפרטורה בפרנהייט: ";
+}
+
+// הוסף מאזין אירועים לכפתור בשקף 10
+if (convertButtonFinal) {
+    convertButtonFinal.addEventListener('click', () => {
+        if (celsiusInputFinal && fahrenheitResultFinal) {
+            const celsiusString = celsiusInputFinal.value;
+
+            // איפוס סגנונות שגיאה
+            fahrenheitResultFinal.classList.remove('error');
+
+            if (celsiusString.trim() === "") {
+                fahrenheitResultFinal.textContent = "שגיאה: אנא הכנס טמפרטורה.";
+                fahrenheitResultFinal.classList.add('error');
+                return;
+            }
+
+            try {
+                const celsius = parseFloat(celsiusString);
+
+                if (isNaN(celsius)) {
+                    fahrenheitResultFinal.textContent = "שגיאה: אנא הכנס מספר חוקי.";
+                    fahrenheitResultFinal.classList.add('error');
+                    return;
+                }
+
+                const fahrenheit = (celsius * 9.0 / 5.0) + 32.0;
+                fahrenheitResultFinal.textContent = `הטמפרטורה בפרנהייט: ${fahrenheit.toFixed(2)}`;
+                // איפוס סגנונות במקרה של הצלחה (אם היו סגנונות שגיאה קודם)
+                fahrenheitResultFinal.classList.remove('error');
+
+            } catch (e) {
+                // במקרה של שגיאה בלתי צפויה
+                fahrenheitResultFinal.textContent = "שגיאה: קלט לא חוקי.";
+                fahrenheitResultFinal.classList.add('error');
+            }
+        }
+    });
+}
         });
     </script>
 </body>
