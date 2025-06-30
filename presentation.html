@@ -21,8 +21,6 @@
             padding: 20px;
             overflow: hidden; /* Prevent body scroll, presentation wrapper handles its own scroll/height */
         }
-              }
-        /* ... existing slide styles ... */
         .slide {
             display: none;
             width: 100%;
@@ -38,14 +36,6 @@
             /* Custom scrollbar for slides */
             scrollbar-width: thin;
             scrollbar-color: #A0AEC0 #F7FAFC;
-            min-height: 0; /* ADD THIS LINE */
-        }
-
-
- #presentation-container {
-            flex-grow: 1;
-            height: auto;
-            min-height: 0;
         }
         .slide::-webkit-scrollbar {
             width: 8px;
@@ -66,7 +56,7 @@
 
         /* Main container for the presentation to centralize content */
         .presentation-wrapper {
-             background-color: #FFFFFF;
+            background-color: #FFFFFF;
             border-radius: 2rem;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
             padding: 2.5rem;
@@ -257,7 +247,7 @@
             color: #26547C; /* Blue */
         }
         .component-title {
-            font-size: 1.9rem;
+            font-size: 1.9rem;D
             font-weight: 800;
             color: #111827;
             margin-bottom: 0.75rem;
@@ -377,7 +367,7 @@
             border: 2px dashed #06D6A0; /* Green */
             border-radius: 0.75rem;
             background-color: #F0FFF4; /* Light Green */
-            font-size: 0.75rem;
+            font-size: 1.05rem;
             color: #065F46; /* Dark Green */
             text-align: center;
             box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
@@ -557,7 +547,7 @@
             box-shadow: 0 5px 15px rgba(239, 71, 111, 0.4);
             text-align: center;
         }
-        .app-output-after {
+        .app-output-final { /* Renamed from app-output-after for slide 10's output */
             background-color: #D6FAE0; /* Light Green */
             border: 2px solid #06D6A0; /* Green */
             border-radius: 0.75rem;
@@ -708,9 +698,46 @@
         .flow-step:last-child {
             margin-bottom: 0;
         }
-
-
-  /* Styles for interactive elements on slide 10 */
+        .phone-mockup-final {
+            background-color: #343A40;
+            border-radius: 2rem;
+            border: 8px solid #495057;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 1rem;
+            overflow: hidden;
+            width: 280px;
+            height: 580px;
+            margin-top: 3rem;
+            flex-shrink: 0;
+        }
+        .phone-screen-final {
+            background-color: #E9ECEF;
+            width: 100%;
+            height: 100%;
+            border-radius: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1.5rem;
+            box-sizing: border-box;
+            gap: 1.5rem;
+        }
+        .app-header-final {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #26547C; /* Blue */
+            margin-bottom: 1rem;
+            border-bottom: 3px solid #FCBF49; /* Orange */
+            padding-bottom: 0.75rem;
+            width: 90%;
+            text-align: center;
+        }
+        /* Styles for interactive elements on slide 10 */
         .app-input-interactive { /* New style for the interactive input field */
             width: 90%;
             padding: 1rem;
@@ -763,90 +790,6 @@
         }
 
 
-
-
-
-
-
-
-
-
-
-
-        .phone-mockup-final {
-            background-color: #343A40;
-            border-radius: 2rem;
-            border: 8px solid #495057;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            padding: 1rem;
-            overflow: hidden;
-            width: 280px;
-            height: 580px;
-            margin-top: 3rem;
-            flex-shrink: 0;
-        }
-        .phone-screen-final {
-            background-color: #E9ECEF;
-            width: 100%;
-            height: 100%;
-            border-radius: 1.5rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 1.5rem;
-            box-sizing: border-box;
-            gap: 1.5rem;
-        }
-        .app-header-final {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #26547C; /* Blue */
-            margin-bottom: 1rem;
-            border-bottom: 3px solid #FCBF49; /* Orange */
-            padding-bottom: 0.75rem;
-            width: 90%;
-            text-align: center;
-        }
-        .app-input-final {
-            width: 90%;
-            padding: 1rem;
-            border: 1px solid #CCC;
-            border-radius: 0.75rem;
-            background-color: #FFFFFF;
-            font-size: 1.05rem;
-            color: #495057;
-            text-align: center;
-            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
-        }
-        .app-button-final {
-            width: 80%;
-            padding: 1.25rem;
-            background-color: #EF476F; /* Red */
-            color: white;
-            border-radius: 0.75rem;
-            font-size: 1.2rem;
-            font-weight: 700;
-            box-shadow: 0 5px 15px rgba(239, 71, 111, 0.4);
-            text-align: center;
-        }
-        .app-output-final {
-            width: 90%;
-            padding: 1rem;
-            background-color: #D6FAE0; /* Light Green */
-            border: 2px solid #06D6A0; /* Green */
-            border-radius: 0.75rem;
-            font-size: 1.1rem;
-            color: #065F46; /* Dark Green */
-            text-align: center;
-            font-weight: 600;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-
         /* Navigation Buttons */
         .nav-button {
             background-color: #26547C; /* Blue */
@@ -858,7 +801,7 @@
             transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out;
         }
         .nav-button:hover:not(:disabled) {
-            background-color: #1a3c5a; /* Darker green on hover */
+            background-color: #1a3c5a; /* Darker blue on hover */
             transform: scale(1.05);
         }
         .nav-button:disabled {
@@ -1142,7 +1085,7 @@ convertButton.setOnClickListener(new View.OnClickListener() {
                             <div class="output-screen-header">ממיר טמפרטורה</div>
                             <input type="text" value="25.0" class="app-input-general" readonly>
                             <div class="app-button-general">המר לפרנהייט</div>
-                            <div class="app-output-after">הטמפרטורה בפרנהייט: 77.00</div>
+                            <div class="app-output-final">הטמפרטורה בפרנהייט: 77.00</div>
                         </div>
                     </div>
                     <div class="code-block-with-title">
@@ -1238,30 +1181,24 @@ convertButton.setOnClickListener(new View.OnClickListener() {
                         התוצאה מוצגת ב-<span class="font-bold text-orange-600">`TextView`</span>
                     </div>
                 </div>
-<!-- כותרת קטנה לטלפון הדינמי -->
-<p class="text-lg font-bold text-black mt-8 mb-4">
-    הדמיה: האפליקציה לביצוע ההמרה בטלפון
-</p>
+                <!-- כותרת קטנה לטלפון הדינמי -->
+                <p class="text-lg font-bold text-black mt-8 mb-4">
+                    הדמיה: האפליקציה לביצוע ההמרה בטלפון
+                </p>
                 <div class="phone-mockup-final">
-
                     <div class="phone-screen-final">
                         <div class="app-header-final">ממיר טמפרטורה</div>
-
-<input type="text" id="celsiusInputFinal" class="app-input-interactive" placeholder="הכנס טמפרטורה בצלזיוס">
-<!--                         <input type="text" value="25.0" class="app-input-final" readonly> 
-                        <div class="app-button-final">המר לפרנהייט</div>
- -->
-<button id="convertButtonFinal" class="app-button-interactive">המר לפרנהייט</button>
-
-<!--                         <div class="app-output-final">הטמפרטורה בפרנהייט: 77.00</div>
-                    </div> -->
-<span id="fahrenheitResultFinal" class="app-output-interactive">הטמפרטורה בפרנהייט: </span>
+                        <!-- שדה קלט אינטראקטיבי לצלזיוס -->
+                        <input type="text" id="celsiusInputFinal" class="app-input-interactive" placeholder="הכנס טמפרטורה בצלזיוס">
+                        <!-- כפתור אינטראקטיבי להמרה -->
+                        <button id="convertButtonFinal" class="app-button-interactive">המר לפרנהייט</button>
+                        <!-- שדה פלט לתוצאה -->
+                        <span id="fahrenheitResultFinal" class="app-output-interactive">הטמפרטורה בפרנהייט: </span>
+                    </div>
                 </div>
             </div>
 
-           
-                
-           <!-- Slide 11: תרגיל מעשי בכיתה -->
+            <!-- Slide 11: תרגיל מעשי בכיתה -->
             <div class="slide" id="slide-11">
                 <h1 class="slide-title">תרגיל מעשי בכיתה</h1>
                 <p class="slide-subtitle text-gray-700">הגיע הזמן ליישם את מה שלמדנו!</p>
@@ -1335,30 +1272,32 @@ convertButton.setOnClickListener(new View.OnClickListener() {
         let currentSlideIndex = 0;
 
         function updateSlideHeight() {
-            // This function is now simplified as max-height on .presentation-wrapper handles most overflow.
-            // If specific slides need dynamic height adjustments that are not simply overflow,
-            // that logic would be added here. For now, it's not strictly necessary for basic scrolling.
+            // פונקציה זו פשוטה כעת מכיוון ש-max-height על ה-wrapper מטפלת ברוב הגלישה.
+            // אם שקפים ספציפיים דורשים התאמות גובה דינמיות שאינן רק גלישה,
+            // הלוגיקה הזו תתווסף כאן. לעת עתה, זה לא הכרחי עבור גלילה בסיסית.
         }
 
         function showSlide(index) {
             slides.forEach((slide, i) => {
                 slide.classList.remove('active');
-                slide.style.display = 'none'; // Ensure non-active slides are fully hidden
+                slide.style.display = 'none'; // וודא ששקפים לא פעילים מוסתרים לחלוטין
             });
 
             currentSlideIndex = index;
             const activeSlide = slides[currentSlideIndex];
             if (activeSlide) {
                 activeSlide.classList.add('active');
-                activeSlide.style.display = 'flex'; // Make sure active slide uses flex display
+                activeSlide.style.display = 'flex'; // וודא ששקף פעיל משתמש ב-flex לתצוגה
 
-                // // If on slide 12, generate and load the image
-                // if (currentSlideIndex === 11) { // Slide 12 is index 11
-                //   //  generateAndDisplayImage();
-                // }
-
-                // No longer dynamically setting min-height on wrapper here to allow content to overflow within the slide
-                // updateSlideHeight(); // Call if additional height adjustments are needed
+                // טען ישירות את התמונה עבור שקף 12
+                if (currentSlideIndex === 11) { // שקף 12 הוא אינדקס 11
+                    const imageElement = document.getElementById('learningEnvImage');
+                    // עדכן רק אם ה-src שונה, כדי למנוע טעינות מיותרות
+                    if (imageElement.src !== "https://did.li/MORANYIMGTASKY") {
+                        imageElement.src = "https://did.li/MORANYIMGTASKY";
+                        imageElement.alt = "[תמונה של סביבת למידה אינטראקטיבית]";
+                    }
+                }
             }
             updateButtons();
             updateSlideCounter();
@@ -1385,102 +1324,61 @@ convertButton.setOnClickListener(new View.OnClickListener() {
                 currentSlideIndex++;
                 showSlide(currentSlideIndex);
             }
-            // Ensure next button is enabled/disabled correctly after changing slide
         });
 
-//         async function generateAndDisplayImage() {
-// <img id="learningEnvImage" src="https://did.li/moranyclassimg" alt="[תמונה של סביבת למידה אינטראקטיבית]" class="rounded-lg shadow-md border border-gray-300 w-full h-auto object-cover">
-//             // const imageElement = document.getElementById('learningEnvImage');
-//             // // Set a temporary loading indicator
-//             // imageElement.src = "https://placehold.co/400x250/C6F6D5/2F855A?text=טוען+תמונה...";
-//             // imageElement.alt = "[טוען תמונה...]"; // Updated alt text to Hebrew
-
-//             // // The prompt is intentionally kept the same as the last version, as it already includes the request for
-//             // // "African American style" with "African-textured hair". Re-running with the same prompt might yield
-//             // // a better result from the image generation model due to its probabilistic nature.
-//             // const prompt = "A diverse group of attractive young adult students, aged 19+, in a high-tech classroom. The atmosphere is collaborative and happy, with students actively learning software engineering on laptops and working joyfully on shared projects. The classroom features a modern layout with comfortable workstations, inviting sofas, and a warm parquet-like floor. Large, beautiful windows provide a scenic view and ample natural light, creating a vibrant and professional educational setting. The group composition specifically includes: at least one male student with glasses, one male student with a light tanned skin tone, one very beautiful female student with particularly tanned skin, very dark brown to black wavy hair and glasses. Crucially, there must be at least one student (boy or girl) with a black or very dark brown skin tone, specifically of African American style, with African-textured hair. The overwhelming majority of the group are male, with at least two females present. Among the rest of the diverse students, exactly one should be of Asian descent, and the remaining students should be of diverse Israeli styles. The overall style is realistic photography.";
-//             // const payload = { instances: { prompt: prompt }, parameters: { "sampleCount": 1 } };
-//             // const apiKey = ""; // Leave as empty string for Canvas to provide
-//             // const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${apiKey}`;
-
-//             // try {
-//             //     const response = await fetch(apiUrl, {
-//             //         method: 'POST',
-//             //         headers: { 'Content-Type': 'application/json' },
-//             //         body: JSON.stringify(payload)
-//             //     });
-//             //     const result = await response.json();
-
-//             //     if (result.predictions && result.predictions.length > 0 && result.predictions[0].bytesBase64Encoded) {
-//             //         const imageUrl = `https://did.li/moranyclassimg;base64,${result.predictions[0].bytesBase64Encoded}`;
-//             //         imageElement.src = imageUrl;
-//             //         imageElement.alt = "[תמונה של סביבת למידה אינטראקטיבית עם תלמידים מגוונים]"; // Updated alt text to Hebrew
-//             //     } else {
-//             //         imageElement.src = "https://did.li/moranyclassimg";
-//             //         imageElement.alt = "[שגיאה בטעינת תמונה]"; // Updated alt text to Hebrew
-//             //         console.error("Image generation failed or returned unexpected format:", result);
-//             //     }
-//             // } catch (error) {
-//             //     imageElement.src = "https://placehold.co/400x250/EF476F/FFFFFF?text=שגיאת+רשת";
-//             //     imageElement.alt = "[שגיאת רשת]"; // Updated alt text to Hebrew
-//             //     console.error("Error generating image:", error);
-//             // }
-//         }
-
-        // Initialize presentation on load
+        // אתחל את המצגת בטעינה
         document.addEventListener('DOMContentLoaded', () => {
             showSlide(currentSlideIndex);
-            // Re-adjust height on window resize - now less critical due to max-height, but still good practice
+            // התאם גובה מחדש בשינוי גודל חלון
             window.addEventListener('resize', updateSlideHeight);
 
-
             // קבל הפניות לאלמנטים של שקף 10
-const celsiusInputFinal = document.getElementById('celsiusInputFinal');
-const convertButtonFinal = document.getElementById('convertButtonFinal');
-const fahrenheitResultFinal = document.getElementById('fahrenheitResultFinal');
+            const celsiusInputFinal = document.getElementById('celsiusInputFinal');
+            const convertButtonFinal = document.getElementById('convertButtonFinal');
+            const fahrenheitResultFinal = document.getElementById('fahrenheitResultFinal');
 
-// הגדר טקסט ראשוני לשדה התוצאה
-if (fahrenheitResultFinal) {
-    fahrenheitResultFinal.textContent = "הטמפרטורה בפרנהייט: ";
-}
-
-// הוסף מאזין אירועים לכפתור בשקף 10
-if (convertButtonFinal) {
-    convertButtonFinal.addEventListener('click', () => {
-        if (celsiusInputFinal && fahrenheitResultFinal) {
-            const celsiusString = celsiusInputFinal.value;
-
-            // איפוס סגנונות שגיאה
-            fahrenheitResultFinal.classList.remove('error');
-
-            if (celsiusString.trim() === "") {
-                fahrenheitResultFinal.textContent = "שגיאה: אנא הכנס טמפרטורה.";
-                fahrenheitResultFinal.classList.add('error');
-                return;
+            // הגדר טקסט ראשוני לשדה התוצאה
+            if (fahrenheitResultFinal) {
+                fahrenheitResultFinal.textContent = "הטמפרטורה בפרנהייט: ";
             }
 
-            try {
-                const celsius = parseFloat(celsiusString);
+            // הוסף מאזין אירועים לכפתור בשקף 10
+            if (convertButtonFinal) {
+                convertButtonFinal.addEventListener('click', () => {
+                    if (celsiusInputFinal && fahrenheitResultFinal) {
+                        const celsiusString = celsiusInputFinal.value;
 
-                if (isNaN(celsius)) {
-                    fahrenheitResultFinal.textContent = "שגיאה: אנא הכנס מספר חוקי.";
-                    fahrenheitResultFinal.classList.add('error');
-                    return;
-                }
+                        // איפוס סגנונות שגיאה
+                        fahrenheitResultFinal.classList.remove('error');
 
-                const fahrenheit = (celsius * 9.0 / 5.0) + 32.0;
-                fahrenheitResultFinal.textContent = `הטמפרטורה בפרנהייט: ${fahrenheit.toFixed(2)}`;
-                // איפוס סגנונות במקרה של הצלחה (אם היו סגנונות שגיאה קודם)
-                fahrenheitResultFinal.classList.remove('error');
+                        if (celsiusString.trim() === "") {
+                            fahrenheitResultFinal.textContent = "שגיאה: אנא הכנס טמפרטורה.";
+                            fahrenheitResultFinal.classList.add('error');
+                            return;
+                        }
 
-            } catch (e) {
-                // במקרה של שגיאה בלתי צפויה
-                fahrenheitResultFinal.textContent = "שגיאה: קלט לא חוקי.";
-                fahrenheitResultFinal.classList.add('error');
+                        try {
+                            const celsius = parseFloat(celsiusString);
+
+                            if (isNaN(celsius)) {
+                                fahrenheitResultFinal.textContent = "שגיאה: אנא הכנס מספר חוקי.";
+                                fahrenheitResultFinal.classList.add('error');
+                                return;
+                            }
+
+                            const fahrenheit = (celsius * 9.0 / 5.0) + 32.0;
+                            fahrenheitResultFinal.textContent = `הטמפרטורה בפרנהייט: ${fahrenheit.toFixed(2)}`;
+                            // איפוס סגנונות במקרה של הצלחה (אם היו סגנונות שגיאה קודם)
+                            fahrenheitResultFinal.classList.remove('error');
+
+                        } catch (e) {
+                            // במקרה של שגיאה בלתי צפויה (למרות ש-parseFloat לא זורק NumberFormatException)
+                            fahrenheitResultFinal.textContent = "שגיאה: קלט לא חוקי.";
+                            fahrenheitResultFinal.classList.add('error');
+                        }
+                    }
+                });
             }
-        }
-    });
-}
         });
     </script>
 </body>
